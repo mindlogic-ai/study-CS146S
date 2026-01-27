@@ -23,29 +23,67 @@ Stanford CS146S: The Modern Software Developer 스터디
 
 ---
 
+## 폴더 구조
+
+```
+study-CS146S/
+├── week1/                    # 원본 과제 (참고용)
+├── week2/
+├── ...
+└── submissions/              # 제출 폴더
+    ├── jhs/
+    │   ├── week1/            # jhs의 week1 제출
+    │   └── week2/
+    ├── abc/
+    │   ├── week1/
+    │   └── ...
+```
+
+---
+
 ## 과제 제출 방법
 
-1. **브랜치 생성**
-   ```bash
-   git checkout -b week{N}-{이니셜}
-   # 예: git checkout -b week1-jhs
-   ```
+### 1. 브랜치 생성
+```bash
+git checkout main
+git pull origin main
+git checkout -b week{N}-{이니셜}
+# 예: git checkout -b week1-jhs
+```
 
-2. **과제 작업**
-   - 해당 주차 폴더에서 과제 진행
-   - 예: `week1/` 폴더
+### 2. 주차 폴더 복사
+```bash
+# 본인 submissions 폴더가 없으면 생성
+mkdir -p submissions/{이니셜}
 
-3. **커밋 & 푸시**
-   ```bash
-   git add .
-   git commit -m "[Week{N} - {이니셜}] 과제 완료"
-   git push origin week{N}-{이니셜}
-   ```
+# 해당 주차 폴더 복사
+cp -r week{N} submissions/{이니셜}/
 
-4. **PR 생성**
-   - GitHub에서 Pull Request 생성
-   - **제목**: `[Week{N} - {이니셜}]` (예: `[Week1 - jhs]`)
-   - **Base**: `main`
+# 예시
+mkdir -p submissions/jhs
+cp -r week1 submissions/jhs/
+```
+
+### 3. 과제 진행
+- `submissions/{이니셜}/week{N}/` 폴더에서 과제 작업
+- 예: `submissions/jhs/week1/`
+
+### 4. 커밋 & 푸시
+```bash
+git add submissions/{이니셜}/week{N}
+git commit -m "[Week{N} - {이니셜}] 과제 완료"
+git push origin week{N}-{이니셜}
+
+# 예시
+git add submissions/jhs/week1
+git commit -m "[Week1 - jhs] 과제 완료"
+git push origin week1-jhs
+```
+
+### 5. PR 생성
+- GitHub에서 Pull Request 생성
+- **제목**: `[Week{N} - {이니셜}]` (예: `[Week1 - jhs]`)
+- **Base**: `main`
 
 ---
 
