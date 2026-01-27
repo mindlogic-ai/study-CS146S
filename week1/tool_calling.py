@@ -1,12 +1,15 @@
 import ast
 import json
 import os
-from typing import Any, Dict, List, Optional, Tuple, Callable
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
 from dotenv import load_dotenv
-from ollama import chat
+from google import genai
+from google.genai import types
 
 load_dotenv()
+
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 NUM_RUNS_TIMES = 3
 
@@ -60,6 +63,7 @@ def add(a: int, b: int) -> int:
 def greet(name: str) -> str:
     return f"Hello, {name}!"
 
+
 # Tool registry for dynamic execution by name
 TOOL_REGISTRY: Dict[str, Callable[..., str]] = {
     "output_every_func_return_type": output_every_func_return_type,
@@ -100,15 +104,18 @@ def extract_tool_call(text: str) -> Dict[str, Any]:
 
 
 def run_model_for_tool_call(system_prompt: str) -> Dict[str, Any]:
-    response = chat(
-        model="llama3.1:8b",
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": "Call the tool now."},
-        ],
-        options={"temperature": 0.3},
+    response = client.models.generate_content(
+        model="gemini-3-flash-preview",
+        contents="Call the tool now.",
+        config=types.GenerateContentConfig(
+            system_instruction=system_prompt,
+            temperature=1.0,
+            thinking_config=types.ThinkingConfig(
+                thinking_level=types.ThinkingLevel.MINIMAL
+            ),
+        ),
     )
-    content = response.message.content
+    content = response.text
     return extract_tool_call(content)
 
 
@@ -125,7 +132,9 @@ def execute_tool_call(call: Dict[str, Any]) -> str:
 
     # Best-effort path resolution if a file_path arg is present
     if "file_path" in args and isinstance(args["file_path"], str):
-        args["file_path"] = resolve_path(args["file_path"]) if str(args["file_path"]) != "" else __file__
+        args["file_path"] = (
+            resolve_path(args["file_path"]) if str(args["file_path"]) != "" else __file__
+        )
     elif "file_path" not in args:
         # Provide default for tools expecting file_path
         args["file_path"] = __file__

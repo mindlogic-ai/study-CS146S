@@ -2,9 +2,12 @@ import os
 import re
 from typing import Callable, List, Tuple
 from dotenv import load_dotenv
-from ollama import chat
+from google import genai
+from google.genai import types
 
 load_dotenv()
+
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 NUM_RUNS_TIMES = 1
 
@@ -80,15 +83,18 @@ def evaluate_function(func: Callable[[str], bool]) -> Tuple[bool, List[str]]:
 
 
 def generate_initial_function(system_prompt: str) -> str:
-    response = chat(
-        model="llama3.1:8b",
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": "Provide the implementation now."},
-        ],
-        options={"temperature": 0.2},
+    response = client.models.generate_content(
+        model="gemini-3-flash-preview",
+        contents="Provide the implementation now.",
+        config=types.GenerateContentConfig(
+            system_instruction=system_prompt,
+            temperature=1.0,
+            thinking_config=types.ThinkingConfig(
+                thinking_level=types.ThinkingLevel.MINIMAL
+            ),
+        ),
     )
-    return extract_code_block(response.message.content)
+    return extract_code_block(response.text)
 
 
 def your_build_reflexion_context(prev_code: str, failures: List[str]) -> str:
@@ -107,15 +113,18 @@ def apply_reflexion(
 ) -> str:
     reflection_context = build_context(prev_code, failures)
     print(f"REFLECTION CONTEXT: {reflection_context}, {reflexion_prompt}")
-    response = chat(
-        model="llama3.1:8b",
-        messages=[
-            {"role": "system", "content": reflexion_prompt},
-            {"role": "user", "content": reflection_context},
-        ],
-        options={"temperature": 0.2},
+    response = client.models.generate_content(
+        model="gemini-3-flash-preview",
+        contents=reflection_context,
+        config=types.GenerateContentConfig(
+            system_instruction=reflexion_prompt,
+            temperature=1.0,
+            thinking_config=types.ThinkingConfig(
+                thinking_level=types.ThinkingLevel.MINIMAL
+            ),
+        ),
     )
-    return extract_code_block(response.message.content)
+    return extract_code_block(response.text)
 
 
 def run_reflexion_flow(
