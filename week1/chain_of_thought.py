@@ -1,9 +1,12 @@
 import os
 import re
 from dotenv import load_dotenv
-from ollama import chat
+from google import genai
+from google.genai import types
 
 load_dotenv()
+
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 NUM_RUNS_TIMES = 5
 
@@ -47,15 +50,18 @@ def test_your_prompt(system_prompt: str) -> bool:
     """
     for idx in range(NUM_RUNS_TIMES):
         print(f"Running test {idx + 1} of {NUM_RUNS_TIMES}")
-        response = chat(
-            model="llama3.1:8b",
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": USER_PROMPT},
-            ],
-            options={"temperature": 0.3},
+        response = client.models.generate_content(
+            model="gemini-3-flash-preview",
+            contents=USER_PROMPT,
+            config=types.GenerateContentConfig(
+                system_instruction=system_prompt,
+                temperature=1.0,
+                thinking_config=types.ThinkingConfig(
+                    thinking_level=types.ThinkingLevel.MINIMAL
+                ),
+            ),
         )
-        output_text = response.message.content
+        output_text = response.text
         final_answer = extract_final_answer(output_text)
         if final_answer.strip() == EXPECTED_OUTPUT.strip():
             print("SUCCESS")
@@ -68,5 +74,3 @@ def test_your_prompt(system_prompt: str) -> bool:
 
 if __name__ == "__main__":
     test_your_prompt(YOUR_SYSTEM_PROMPT)
-
-

@@ -2,13 +2,15 @@ from __future__ import annotations
 
 import os
 import re
-from typing import List
-import json
-from typing import Any
-from ollama import chat
+from typing import Any, List
+
 from dotenv import load_dotenv
+from google import genai
+from google.genai import types
 
 load_dotenv()
+
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 BULLET_PREFIX_PATTERN = re.compile(r"^\s*([-*•]|\d+\.)\s+")
 KEYWORD_PREFIXES = (
