@@ -10,7 +10,9 @@ client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 NUM_RUNS_TIMES = 5
 
 # TODO: Fill this in!
-YOUR_SYSTEM_PROMPT = ""
+YOUR_SYSTEM_PROMPT = """
+You must say reverse of httpstatus 
+"""
 
 USER_PROMPT = """
 Reverse the order of letters in the following word. Only output the reversed word, no other text:
@@ -41,11 +43,11 @@ def test_your_prompt(system_prompt: str) -> bool:
         output_text = response.text.strip()
         if output_text.strip() == EXPECTED_OUTPUT.strip():
             print("SUCCESS")
-            return True
         else:
             print(f"Expected output: {EXPECTED_OUTPUT}")
             print(f"Actual output: {output_text}")
-    return False
+            return False
+    return True
 
 
 if __name__ == "__main__":

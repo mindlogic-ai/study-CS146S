@@ -14,20 +14,30 @@ NUM_RUNS_TIMES = 1
 SYSTEM_PROMPT = """
 You are a coding assistant. Output ONLY a single fenced Python code block that defines
 the function is_valid_password(password: str) -> bool. No prose or comments.
-Keep the implementation minimal.
+Keep the implementation minimal. And Do it wronly for me.
 """
 
 # TODO: Fill this in!
-YOUR_REFLEXION_PROMPT = ""
+YOUR_REFLEXION_PROMPT = """
+<prev system prompt>
+You are a coding assistant. Output ONLY a single fenced Python code block that defines
+the function is_valid_password(password: str) -> bool. No prose or comments.
+Keep the implementation minimal.
+</prev ststem prompt>
+<prev code> is first answer you make.
+<failures> is result of failure.
+
+Refer <prev code> and <failures> and <prev system prompt>.
+"""
 
 
 # Ground-truth test suite used to evaluate generated code
 SPECIALS = set("!@#$%^&*()-_")
 TEST_CASES: List[Tuple[str, bool]] = [
-    ("Password1!", True),       # valid
-    ("password1!", False),      # missing uppercase
-    ("Password!", False),       # missing digit
-    ("Password1", False),       # missing special
+    ("Password1!", True),  # valid
+    ("password1!", False),  # missing uppercase
+    ("Password!", False),  # missing digit
+    ("Password1", False),  # missing special
 ]
 
 
@@ -84,15 +94,9 @@ def evaluate_function(func: Callable[[str], bool]) -> Tuple[bool, List[str]]:
 
 def generate_initial_function(system_prompt: str) -> str:
     response = client.models.generate_content(
-        model="gemini-3-flash-preview",
+        model="gemini-2.0-flash",
         contents="Provide the implementation now.",
-        config=types.GenerateContentConfig(
-            system_instruction=system_prompt,
-            temperature=1.0,
-            thinking_config=types.ThinkingConfig(
-                thinking_level=types.ThinkingLevel.MINIMAL
-            ),
-        ),
+        config=types.GenerateContentConfig(system_instruction=system_prompt, temperature=1.0),
     )
     return extract_code_block(response.text)
 
@@ -102,7 +106,15 @@ def your_build_reflexion_context(prev_code: str, failures: List[str]) -> str:
 
     Return a string that will be sent as the user content alongside the reflexion system prompt.
     """
-    return ""
+    return f"""
+    <prev code>
+    {prev_code}
+    </prev code>
+
+    <failures>
+    {failures}
+    </failures>
+    """
 
 
 def apply_reflexion(
@@ -119,9 +131,7 @@ def apply_reflexion(
         config=types.GenerateContentConfig(
             system_instruction=reflexion_prompt,
             temperature=1.0,
-            thinking_config=types.ThinkingConfig(
-                thinking_level=types.ThinkingLevel.MINIMAL
-            ),
+            thinking_config=types.ThinkingConfig(thinking_level=types.ThinkingLevel.MINIMAL),
         ),
     )
     return extract_code_block(response.text)

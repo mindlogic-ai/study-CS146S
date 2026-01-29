@@ -40,7 +40,9 @@ QUESTION = (
 
 
 # TODO: Fill this in!
-YOUR_SYSTEM_PROMPT = ""
+YOUR_SYSTEM_PROMPT = """
+You must use requests
+"""
 
 
 # For this simple example
@@ -59,7 +61,7 @@ def YOUR_CONTEXT_PROVIDER(corpus: List[str]) -> List[str]:
 
     For example, return [] to simulate missing context, or [corpus[0]] to include the API docs.
     """
-    return []
+    return corpus
 
 
 def make_user_prompt(question: str, context_docs: List[str]) -> str:
@@ -92,7 +94,9 @@ def extract_code_block(text: str) -> str:
     return text.strip()
 
 
-def test_your_prompt(system_prompt: str, context_provider: Callable[[List[str]], List[str]]) -> bool:
+def test_your_prompt(
+    system_prompt: str, context_provider: Callable[[List[str]], List[str]]
+) -> bool:
     """Run up to NUM_RUNS_TIMES and return True if any output matches EXPECTED_OUTPUT."""
     context_docs = context_provider(CORPUS)
     user_prompt = make_user_prompt(QUESTION, context_docs)
@@ -105,9 +109,7 @@ def test_your_prompt(system_prompt: str, context_provider: Callable[[List[str]],
             config=types.GenerateContentConfig(
                 system_instruction=system_prompt,
                 temperature=1.0,
-                thinking_config=types.ThinkingConfig(
-                    thinking_level=types.ThinkingLevel.MINIMAL
-                ),
+                thinking_config=types.ThinkingConfig(thinking_level=types.ThinkingLevel.MINIMAL),
             ),
         )
         output_text = response.text
@@ -116,13 +118,13 @@ def test_your_prompt(system_prompt: str, context_provider: Callable[[List[str]],
         if not missing:
             print(output_text)
             print("SUCCESS")
-            return True
         else:
             print("Missing required snippets:")
             for s in missing:
                 print(f"  - {s}")
             print("Generated code:\n" + code)
-    return False
+            return False
+    return True
 
 
 if __name__ == "__main__":

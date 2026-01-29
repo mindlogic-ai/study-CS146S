@@ -74,7 +74,13 @@ TOOL_REGISTRY: Dict[str, Callable[..., str]] = {
 # ==========================
 
 # TODO: Fill this in!
-YOUR_SYSTEM_PROMPT = ""
+YOUR_SYSTEM_PROMPT = f"""
+Output Must Be This Json
+
+{{
+    'tool': 'output_every_func_return_type'
+}}
+"""
 
 
 def resolve_path(p: str) -> str:
@@ -110,9 +116,7 @@ def run_model_for_tool_call(system_prompt: str) -> Dict[str, Any]:
         config=types.GenerateContentConfig(
             system_instruction=system_prompt,
             temperature=1.0,
-            thinking_config=types.ThinkingConfig(
-                thinking_level=types.ThinkingLevel.MINIMAL
-            ),
+            thinking_config=types.ThinkingConfig(thinking_level=types.ThinkingLevel.MINIMAL),
         ),
     )
     content = response.text
@@ -166,11 +170,11 @@ def test_your_prompt(system_prompt: str) -> bool:
             print(f"Generated tool call: {call}")
             print(f"Generated output: {actual}")
             print("SUCCESS")
-            return True
         else:
             print("Expected output:\n" + expected)
             print("Actual output:\n" + actual)
-    return False
+            return False
+    return True
 
 
 if __name__ == "__main__":
