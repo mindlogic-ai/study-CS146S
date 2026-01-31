@@ -2,6 +2,8 @@
 
 A Model Context Protocol (MCP) server for investment decision-making that aggregates stock prices, cryptocurrency data, and market trends using free APIs that require no authentication.
 
+**Live deployment**: https://investment-helper-mcp-production.up.railway.app
+
 ## Overview
 
 This MCP server provides three tools to help with investment research:
@@ -63,7 +65,9 @@ This MCP server provides three tools to help with investment research:
    cp .env.example .env
    ```
 
-## How to Run Locally
+## How to Run
+
+### Option 1: Local STDIO Mode (for Claude Desktop)
 
 Start the server in STDIO mode:
 
@@ -72,6 +76,29 @@ python -m server.main
 ```
 
 The server will start and wait for MCP protocol messages on stdin/stdout.
+
+### Option 2: Local HTTP/SSE Mode (for testing remote transport)
+
+Start the server in HTTP mode:
+
+```bash
+# Set API key for authentication
+export API_KEY="your-secret-key"
+
+# Start HTTP server
+python -m server.http
+```
+
+The server will start on `http://localhost:8000` with:
+- `GET /health` - Health check (no auth required)
+- `GET /sse` - SSE endpoint for MCP connections (auth required)
+- `POST /messages` - Message handling endpoint (auth required)
+
+Test with:
+```bash
+curl http://localhost:8000/health
+# {"status":"healthy","service":"investment-helper-mcp","transport":"sse"}
+```
 
 ## Claude Desktop Configuration
 
@@ -106,6 +133,28 @@ Replace `/absolute/path/to/week3` with the actual path to the week3 directory.
     }
   }
 }
+```
+
+## Remote Deployment (Railway)
+
+```bash
+# Install CLI and login
+brew install railway
+railway login
+
+# Deploy
+railway init                    # Select "Empty Project"
+railway variables set API_KEY="$(python -c 'import secrets; print(secrets.token_urlsafe(32))')"
+railway up
+railway domain                  # Get your URL
+```
+
+**Authentication**: All endpoints except `/health` require `Authorization: Bearer <API_KEY>` header.
+
+```bash
+# Test
+curl https://investment-helper-mcp-production.up.railway.app/health
+curl -H "Authorization: Bearer YOUR_API_KEY" https://investment-helper-mcp-production.up.railway.app/sse
 ```
 
 ## Tool Reference
@@ -308,6 +357,7 @@ week3/
 ├── server/
 │   ├── __init__.py
 │   ├── main.py              # MCP server entrypoint (STDIO transport)
+│   ├── http.py              # MCP server entrypoint (HTTP/SSE transport)
 │   ├── config.py            # Settings management
 │   ├── tools/
 │   │   ├── __init__.py
@@ -326,15 +376,19 @@ week3/
 ├── README.md
 ├── requirements.txt
 ├── pyproject.toml
-└── .env.example
+├── .env.example
+├── Procfile                 # Railway start command
+└── railway.json             # Railway deployment config
 ```
 
 ## Development Notes
 
-- All logging goes to stderr (stdout is reserved for MCP protocol)
+- **STDIO mode**: All logging goes to stderr (stdout is reserved for MCP protocol)
+- **HTTP mode**: Logging goes to stdout (visible in Railway logs)
 - yfinance calls are wrapped in `asyncio.to_thread()` for async compatibility
 - CoinGecko rate limiter tracks calls in a sliding 60-second window
 - Market hours detection is approximate and doesn't account for US holidays
+- HTTP transport uses SSE (Server-Sent Events) for server-to-client streaming
 
 ## License
 
