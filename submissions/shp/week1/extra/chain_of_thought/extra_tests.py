@@ -28,7 +28,7 @@ TEST_CASES: List[Tuple[str, int, str]] = [
     ("what is 5^13 (mod 7)?", 5, "Fermat's little theorem applicable"),
     # Challenging cases
     ("what is 3^1000 (mod 100)?", 1, "very large exponent"),
-    ("what is 17^23 (mod 100)?", 77, "larger base"),
+    ("what is 17^23 (mod 100)?", 13, "larger base"),  # Fixed: 17^23 mod 100 = 13
     # Edge cases
     ("what is 1^999 (mod 50)?", 1, "base is 1"),
     ("what is 10^5 (mod 100)?", 0, "result is 0"),

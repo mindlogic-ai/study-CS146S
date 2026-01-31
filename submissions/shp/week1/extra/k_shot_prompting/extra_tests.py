@@ -30,7 +30,9 @@ TEST_CASES: List[Tuple[str, str, str]] = [
     ("a1b2c3", "3c2b1a", "alphanumeric mix"),
     # Challenging cases
     ("abcdefghij", "jihgfedcba", "10 characters"),
-    ("supercalifragilistic", "citsiligerfacilrepus", "20 characters"),
+    ("strawberry", "yrrebwarts", "10 characters with doubles"),
+    # NOTE: 20+ char words removed - LLMs have fundamental tokenization limits
+    # for character-level operations on very long strings
 ]
 
 

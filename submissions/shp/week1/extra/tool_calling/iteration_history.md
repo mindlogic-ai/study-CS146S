@@ -56,3 +56,19 @@ No explanation, no markdown, just the JSON object.
 2. **Exact format example**: Showing the exact JSON structure eliminates ambiguity
 3. **Strict output constraint**: "ONLY valid JSON" and "No explanation, no markdown" prevent extra text that would break JSON parsing
 4. **Default behavior**: Noting args are optional allows the model to use empty args `{}`
+
+---
+
+## Extra Tests Iteration
+
+### Attempt 1
+All 5 test cases passed with 100% consistency (15/15 runs correct).
+
+Test cases included various phrasings:
+- Direct command ("Call the tool now")
+- Polite request ("Please invoke...")
+- Descriptive ("Use the tool to list...")
+- Different wording ("Execute the function analysis tool")
+- With context ("I need to see the return types...")
+
+The original prompt handles all phrasings effectively.

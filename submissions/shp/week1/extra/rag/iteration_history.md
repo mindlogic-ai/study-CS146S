@@ -71,3 +71,18 @@ def YOUR_CONTEXT_PROVIDER(corpus: List[str]) -> List[str]:
 3. **Exactness**: "Follow the documented API exactly" ensures correct URL, endpoint, and headers
 4. **Output format**: "single fenced Python code block" matches the expected output format
 5. **Retrieval selection**: `corpus[0]` contains the API docs - the only relevant document for this task
+
+---
+
+## Extra Tests Iteration
+
+### Attempt 1
+All 4 test cases passed with 100% consistency (12/12 runs correct).
+
+Test cases included:
+- Original `fetch_user_name` function
+- Variant returning full user dict
+- Variant checking if user exists (returns bool)
+- Variant verifying correct base URL usage
+
+The original prompt and context provider handle all variations effectively.

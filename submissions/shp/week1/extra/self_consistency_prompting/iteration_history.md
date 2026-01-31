@@ -66,3 +66,18 @@ Always end with "Answer: <number>".
 3. **Verification step**: "Double-check your arithmetic" adds a self-review layer
 4. **Consistent format**: "Answer: <number>" ensures all runs produce extractable answers
 5. **Self-consistency benefit**: Even with temperature=1.0, the clear methodology leads to the same answer across runs, making majority voting trivial (5/5 agreement)
+
+---
+
+## Extra Tests Iteration
+
+### Attempt 1
+All 8 test cases passed with 100% consistency (40/40 individual runs correct).
+
+Test cases included:
+- Basic arithmetic word problems
+- Tricky wording ("all but 9 run away" → 9 remain)
+- Tricky logic ("you take away 4" → you have 4)
+- Multi-step calculations
+
+The original prompt handles all these cases effectively.

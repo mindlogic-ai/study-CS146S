@@ -99,3 +99,17 @@ Even though reflexion wasn't triggered in this run (the initial code passed), th
 - Iterative improvement is more reliable than one-shot generation
 
 The reflexion loop: Generate → Test → If fail: (Show failures → Regenerate) → Test again
+
+---
+
+## Extra Tests Iteration
+
+### Attempt 1
+All 3 validation tasks passed on initial implementation (no reflexion needed).
+
+Tasks tested:
+1. **is_valid_email**: 6 test cases for email format validation
+2. **is_valid_phone**: 6 test cases for US phone number validation
+3. **is_palindrome**: 6 test cases including phrases with spaces/punctuation
+
+All initial implementations were correct, demonstrating that the model can handle these validation tasks without requiring the reflexion feedback loop. However, the reflexion infrastructure remains valuable for more complex or edge-case-heavy tasks.
