@@ -9,8 +9,34 @@ client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 NUM_RUNS_TIMES = 5
 
-# TODO: Fill this in!
-YOUR_SYSTEM_PROMPT = ""
+YOUR_SYSTEM_PROMPT = """
+<rules>
+- Do NOT include any explanations
+- Do NOT repeat the input word
+- Do NOT add spaces or punctuation
+- Reverse letter by letter from the end to the beginning
+</rules>
+
+<instructions>
+Reverse the order of letters in the given word.
+by taking each letter from the last to the first.
+</instructions>
+
+<examples>
+Input: hello -> Output: olleh
+
+Input: programming -> Output: gnimmargorp
+
+Input : mindlogic -> Output: cigoldnim
+
+Input : developer -> Output: repoleved
+
+</examples>
+
+<output_format>
+Output only the reversed word, nothing else.
+</output_format>
+"""
 
 USER_PROMPT = """
 Reverse the order of letters in the following word. Only output the reversed word, no other text:

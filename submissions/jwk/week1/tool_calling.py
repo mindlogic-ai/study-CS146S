@@ -73,8 +73,24 @@ TOOL_REGISTRY: Dict[str, Callable[..., str]] = {
 # Prompt scaffolding
 # ==========================
 
-# TODO: Fill this in!
-YOUR_SYSTEM_PROMPT = ""
+YOUR_SYSTEM_PROMPT = """
+<tools> 
+Available tool:
+ - name: output_every_func_return_type
+ - description: Returns the return type of every function in a Python file
+ - args: file_path (string, optional)
+</tools>
+
+<rules>
+- Respond ONLY with a JSON object
+- Do NOT include explanations or markdown
+- Do NOT wrap in code fences
+</rules>
+
+<output_format>
+{"tool": "tool_name", "args": {"arg_name": "value"}}
+</output_format>
+"""
 
 
 def resolve_path(p: str) -> str:

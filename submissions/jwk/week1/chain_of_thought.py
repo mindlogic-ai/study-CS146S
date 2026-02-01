@@ -10,8 +10,24 @@ client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 NUM_RUNS_TIMES = 5
 
-# TODO: Fill this in!
-YOUR_SYSTEM_PROMPT = ""
+YOUR_SYSTEM_PROMPT = """
+<rules>
+- Think through the problem step by step
+- Show all intermediate calculations
+- Do NOT skip any steps
+</rules>
+
+<instructions>
+You are a mathematical problem solver.
+For modular exponentiation, find the pattern or cycle in powers.
+Break down large exponents into manageable steps.
+</instructions>
+
+<output_format>
+SHow your complete step-by-step reasoning.
+End with "Answer: <number>" on the final line.
+</output_format>
+"""
 
 
 USER_PROMPT = """

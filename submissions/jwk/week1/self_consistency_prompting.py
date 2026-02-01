@@ -11,8 +11,23 @@ client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 NUM_RUNS_TIMES = 5
 
-# TODO: Fill this in! Try to get as close to 100% correctness across all runs as possible.
-YOUR_SYSTEM_PROMPT = ""
+YOUR_SYSTEM_PROMPT = """
+<rules>
+- Think through the problem step by step
+- Identify all key numbers and their meanings
+- Do NOT skip any steps
+</rules>
+
+<instructions>
+You are a mathematical problem solver.
+Carefully read and extract all information.
+Calculate step by step.
+</instructions>
+
+<output_format>
+Show your reasoning, then end with "Answer: <number>"
+</output_format>
+"""
 
 USER_PROMPT = """
 Solve this problem, then give the final answer on the last line as "Answer: <number>".
