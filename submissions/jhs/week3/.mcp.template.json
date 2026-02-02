@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "youtube": {
+      "command": "uv",
+      "args": ["run", "--directory", "/path/to/submissions/jhs/week3/youtube-server", "fastmcp", "run", "main.py"],
+      "env": {
+        "YOUTUBE_API_KEY": "your_api_key_here"
+      }
+    },
+    "clawnews": {
+      "command": "uv",
+      "args": ["run", "--directory", "/path/to/submissions/jhs/week3/clawnews-server", "fastmcp", "run", "main.py"]
+    }
+  }
+}

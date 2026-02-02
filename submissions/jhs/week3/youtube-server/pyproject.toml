@@ -1,0 +1,13 @@
+[project]
+name = "youtube-mcp-server"
+version = "0.1.0"
+description = "MCP server for YouTube video metadata and transcripts"
+requires-python = ">=3.10"
+dependencies = [
+    "fastmcp>=2.0.0",
+    "google-api-python-client>=2.0.0",
+    "youtube-transcript-api>=0.6.0",
+]
+
+[project.scripts]
+youtube-mcp = "main:main"
