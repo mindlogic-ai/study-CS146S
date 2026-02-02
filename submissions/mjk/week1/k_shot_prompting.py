@@ -10,7 +10,26 @@ client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 NUM_RUNS_TIMES = 5
 
 # TODO: Fill this in!
-YOUR_SYSTEM_PROMPT = ""
+YOUR_SYSTEM_PROMPT = """You are a letter-reversal expert. You reverse the order of letters in a word character by character.
+
+Here are some examples:
+
+Input: hello
+Output: olleh
+
+Input: world
+Output: dlrow
+
+Input: python
+Output: nohtyp
+
+Input: algorithm
+Output: mhtirogla
+
+Input: status
+Output: sutats
+
+Only output the reversed word, nothing else."""
 
 USER_PROMPT = """
 Reverse the order of letters in the following word. Only output the reversed word, no other text:

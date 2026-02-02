@@ -40,7 +40,7 @@ QUESTION = (
 
 
 # TODO: Fill this in!
-YOUR_SYSTEM_PROMPT = ""
+YOUR_SYSTEM_PROMPT = """You are a Python coding assistant. Write clean, correct Python code based solely on the provided context documentation. Use the requests library for HTTP calls. Always include proper authentication headers as documented. Output only a fenced Python code block."""
 
 
 # For this simple example
@@ -59,7 +59,7 @@ def YOUR_CONTEXT_PROVIDER(corpus: List[str]) -> List[str]:
 
     For example, return [] to simulate missing context, or [corpus[0]] to include the API docs.
     """
-    return []
+    return corpus
 
 
 def make_user_prompt(question: str, context_docs: List[str]) -> str:

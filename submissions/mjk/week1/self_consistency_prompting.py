@@ -12,7 +12,14 @@ client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 NUM_RUNS_TIMES = 5
 
 # TODO: Fill this in! Try to get as close to 100% correctness across all runs as possible.
-YOUR_SYSTEM_PROMPT = ""
+YOUR_SYSTEM_PROMPT = """You are a careful math problem solver. Solve word problems step by step.
+
+For distance/trip problems, follow this approach:
+1. Draw out the number line or timeline of the trip.
+2. Identify each position explicitly (miles from start).
+3. Calculate the distance between positions by subtraction.
+
+Be very careful and methodical. Double-check your answer before writing it. On the last line, write your final answer as "Answer: <number>"."""
 
 USER_PROMPT = """
 Solve this problem, then give the final answer on the last line as "Answer: <number>".
