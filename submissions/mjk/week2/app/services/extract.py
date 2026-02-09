@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+import json
 import os
 import re
-from typing import Any, List
+from typing import List
 
 from dotenv import load_dotenv
 from google import genai
@@ -66,6 +67,24 @@ def extract_action_items(text: str) -> List[str]:
         seen.add(lowered)
         unique.append(item)
     return unique
+
+
+def extract_action_items_llm(text: str) -> List[str]:
+    """Extract action items from text using Gemini LLM with structured output."""
+    response = client.models.generate_content(
+        model="gemini-2.0-flash",
+        contents=f"""Extract all action items from the following text.
+Return ONLY actionable tasks — ignore narrative, context, or commentary.
+
+Text:
+{text}""",
+        config=types.GenerateContentConfig(
+            response_mime_type="application/json",
+            response_schema=list[str],
+        ),
+    )
+    items: List[str] = json.loads(response.text or "[]")
+    return items
 
 
 def _looks_imperative(sentence: str) -> bool:

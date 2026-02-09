@@ -24,20 +24,24 @@
     <div class="row">
       <label class="row"><input id="save_note" type="checkbox" checked /> Save as note</label>
       <button id="extract">Extract</button>
+      <button id="extract-llm">Extract LLM</button>
+      <button id="list-notes">List Notes</button>
     </div>
 
     <div class="items" id="items"></div>
+    <div id="notes-list"></div>
 
     <script>
       const $ = (sel) => document.querySelector(sel);
       const itemsEl = $('#items');
-      const btn = $('#extract');
-      btn.addEventListener('click', async () => {
+      const notesEl = $('#notes-list');
+
+      async function doExtract(endpoint) {
         const text = $('#text').value;
         const save = $('#save_note').checked;
         itemsEl.textContent = 'Extracting...';
         try {
-          const res = await fetch('/action-items/extract', {
+          const res = await fetch(endpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ text, save_note: save }),
@@ -65,8 +69,31 @@
           console.error(err);
           itemsEl.textContent = 'Error extracting items';
         }
-      });
+      }
 
+      $('#extract').addEventListener('click', () => doExtract('/action-items/extract'));
+      $('#extract-llm').addEventListener('click', () => doExtract('/action-items/extract-llm'));
+
+      $('#list-notes').addEventListener('click', async () => {
+        notesEl.textContent = 'Loading notes...';
+        try {
+          const res = await fetch('/notes');
+          if (!res.ok) throw new Error('Request failed');
+          const notes = await res.json();
+          if (notes.length === 0) {
+            notesEl.innerHTML = '<p class="muted">No notes found.</p>';
+            return;
+          }
+          notesEl.innerHTML = '<h2>Notes</h2>' + notes.map(n =>
+            `<div style="border:1px solid #e5e7eb;padding:0.75rem;margin:0.5rem 0;border-radius:4px">` +
+            `<strong>#${n.id}</strong> <span class="muted">${n.created_at}</span>` +
+            `<pre style="white-space:pre-wrap;margin:0.5rem 0 0">${n.content}</pre></div>`
+          ).join('');
+        } catch (err) {
+          console.error(err);
+          notesEl.textContent = 'Error loading notes';
+        }
+      });
     </script>
   </body>
   </html>
