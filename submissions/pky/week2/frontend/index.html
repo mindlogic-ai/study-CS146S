@@ -5,37 +5,282 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Action Item Extractor</title>
     <style>
-      body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif; margin: 2rem auto; max-width: 800px; padding: 0 1rem; }
-      h1 { font-size: 1.5rem; }
-      textarea { width: 100%; min-height: 160px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, monospace; }
-      button { padding: 0.5rem 1rem; cursor: pointer; }
-      .items { margin-top: 1rem; }
-      .item { display: flex; align-items: center; gap: 0.5rem; padding: 0.25rem 0; }
-      .muted { color: #6b7280; font-size: 0.875rem; }
-      .row { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
-      .notes-section { margin-top: 2rem; border-top: 1px solid #e5e7eb; padding-top: 1rem; }
-      .note-card { border: 1px solid #e5e7eb; border-radius: 0.5rem; padding: 0.75rem; margin-bottom: 0.5rem; }
-      .note-card .meta { color: #6b7280; font-size: 0.75rem; }
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;
+        margin: 0;
+        padding: 2rem 1rem;
+        background-color: #f9fafb;
+        color: #111827;
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      /* Header */
+      header {
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #e5e7eb;
+        margin-bottom: 2rem;
+      }
+
+      h1 {
+        font-size: 1.75rem;
+        font-weight: 600;
+        margin: 0 0 0.5rem 0;
+        color: #111827;
+      }
+
+      .subtitle {
+        color: #6b7280;
+        font-size: 0.875rem;
+        margin: 0;
+      }
+
+      /* Main content */
+      main {
+        background-color: white;
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #374151;
+        margin-bottom: 0.5rem;
+      }
+
+      /* Textarea */
+      textarea {
+        width: 100%;
+        min-height: 180px;
+        padding: 0.75rem;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, monospace;
+        font-size: 0.875rem;
+        border: 1px solid #d1d5db;
+        border-radius: 0.5rem;
+        background-color: white;
+        color: #111827;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        resize: vertical;
+      }
+
+      textarea:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      }
+
+      textarea::placeholder {
+        color: #9ca3af;
+      }
+
+      /* Button row */
+      .row {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-top: 1rem;
+      }
+
+      /* Checkbox label */
+      .checkbox-label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.875rem;
+        color: #374151;
+        cursor: pointer;
+        margin: 0;
+      }
+
+      .checkbox-label input[type="checkbox"] {
+        width: 1rem;
+        height: 1rem;
+        cursor: pointer;
+        accent-color: #3b82f6;
+      }
+
+      /* Buttons */
+      button {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        border: 1px solid transparent;
+      }
+
+      .btn-primary {
+        background-color: #3b82f6;
+        color: white;
+        border-color: #3b82f6;
+      }
+
+      .btn-primary:hover {
+        background-color: #2563eb;
+        border-color: #2563eb;
+      }
+
+      .btn-outline {
+        background-color: white;
+        color: #3b82f6;
+        border-color: #3b82f6;
+      }
+
+      .btn-outline:hover {
+        background-color: #3b82f6;
+        color: white;
+      }
+
+      .btn-ghost {
+        background-color: transparent;
+        color: #6b7280;
+        border-color: transparent;
+      }
+
+      .btn-ghost:hover {
+        background-color: #f3f4f6;
+        color: #374151;
+      }
+
+      /* Action items section */
+      .items {
+        margin-top: 1.5rem;
+      }
+
+      .items-container {
+        background-color: white;
+        border-radius: 0.75rem;
+        padding: 1rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem;
+        margin-bottom: 0.25rem;
+        border-radius: 0.5rem;
+        transition: background-color 0.15s ease;
+      }
+
+      .item:hover {
+        background-color: #f9fafb;
+      }
+
+      .item input[type="checkbox"] {
+        width: 1.125rem;
+        height: 1.125rem;
+        cursor: pointer;
+        accent-color: #3b82f6;
+        flex-shrink: 0;
+      }
+
+      .item span {
+        color: #111827;
+        font-size: 0.9375rem;
+      }
+
+      .muted {
+        color: #6b7280;
+        font-size: 0.875rem;
+      }
+
+      /* Loading state */
+      .loading {
+        color: #6b7280;
+        font-size: 0.9375rem;
+        animation: pulse 1.5s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+      }
+
+      /* Error state */
+      .error {
+        color: #dc2626;
+        background-color: #fef2f2;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+      }
+
+      /* Notes section */
+      .notes-section {
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid #e5e7eb;
+      }
+
+      .notes-section h2 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 0 0 1rem 0;
+        color: #111827;
+      }
+
+      .note-card {
+        background-color: white;
+        border-left: 3px solid #3b82f6;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        margin-bottom: 0.75rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .note-card > div:first-child {
+        color: #111827;
+        margin-bottom: 0.5rem;
+        white-space: pre-wrap;
+        line-height: 1.6;
+      }
+
+      .note-card .meta {
+        color: #6b7280;
+        font-size: 0.75rem;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, monospace;
+      }
     </style>
   </head>
   <body>
-    <h1>Action Item Extractor</h1>
-    <p class="muted">Paste notes and extract actionable items. Minimal raw HTML frontend.</p>
+    <div class="container">
+      <header>
+        <h1>Action Item Extractor</h1>
+        <p class="subtitle">Paste notes and extract actionable items. Minimal raw HTML frontend.</p>
+      </header>
 
-    <label for="text">Notes</label>
-    <textarea id="text" placeholder="Paste notes here...&#10;e.g.&#10;- [ ] Set up database&#10;- Implement extract endpoint"></textarea>
-    <div class="row">
-      <label class="row"><input id="save_note" type="checkbox" checked /> Save as note</label>
-      <button id="extract">Extract</button>
-      <button id="extract-llm">Extract LLM</button>
-      <button id="list-notes">List Notes</button>
-    </div>
+      <main>
+        <label for="text">Notes</label>
+        <textarea id="text" placeholder="Paste notes here...&#10;e.g.&#10;- [ ] Set up database&#10;- Implement extract endpoint"></textarea>
+        <div class="row">
+          <label class="checkbox-label"><input id="save_note" type="checkbox" checked /> Save as note</label>
+          <button id="extract" class="btn-primary">Extract</button>
+          <button id="extract-llm" class="btn-outline">Extract LLM</button>
+          <button id="list-notes" class="btn-ghost">List Notes</button>
+        </div>
 
-    <div class="items" id="items"></div>
+        <div class="items" id="items"></div>
+      </main>
 
-    <div class="notes-section" id="notes-section" style="display:none;">
-      <h2>All Notes</h2>
-      <div id="notes-list"></div>
+      <div class="notes-section" id="notes-section" style="display:none;">
+        <h2>All Notes</h2>
+        <div id="notes-list"></div>
+      </div>
     </div>
 
     <script>
@@ -48,9 +293,9 @@
           itemsEl.innerHTML = '<p class="muted">No action items found.</p>';
           return;
         }
-        itemsEl.innerHTML = data.items.map(it => (
+        itemsEl.innerHTML = '<div class="items-container">' + data.items.map(it => (
           `<div class="item"><input type="checkbox" data-id="${it.id}" /> <span>${it.text}</span></div>`
-        )).join('');
+        )).join('') + '</div>';
         itemsEl.querySelectorAll('input[type="checkbox"]').forEach(cb => {
           cb.addEventListener('change', async (e) => {
             const id = e.target.getAttribute('data-id');
@@ -67,7 +312,7 @@
       async function doExtract(endpoint) {
         const text = $('#text').value;
         const save = $('#save_note').checked;
-        itemsEl.textContent = 'Extracting...';
+        itemsEl.innerHTML = '<p class="loading">Extracting...</p>';
         try {
           const res = await fetch(endpoint, {
             method: 'POST',
@@ -79,7 +324,7 @@
           renderItems(data);
         } catch (err) {
           console.error(err);
-          itemsEl.textContent = 'Error extracting items';
+          itemsEl.innerHTML = '<p class="error">Error extracting items</p>';
         }
       }
 
@@ -93,7 +338,7 @@
       $('#list-notes').addEventListener('click', async () => {
         const section = $('#notes-section');
         const list = $('#notes-list');
-        list.textContent = 'Loading...';
+        list.innerHTML = '<p class="loading">Loading...</p>';
         section.style.display = 'block';
         try {
           const res = await fetch('/notes');
@@ -108,7 +353,7 @@
           )).join('');
         } catch (err) {
           console.error(err);
-          list.textContent = 'Error loading notes';
+          list.innerHTML = '<p class="error">Error loading notes</p>';
         }
       });
     </script>
