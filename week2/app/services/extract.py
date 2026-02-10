@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+import json
 import os
 import re
-from typing import Any, List
+from typing import List
 
 from dotenv import load_dotenv
 from google import genai
@@ -66,6 +67,42 @@ def extract_action_items(text: str) -> List[str]:
         seen.add(lowered)
         unique.append(item)
     return unique
+
+
+# --- LLM-powered extraction using Gemini API (TODO 1) ---
+def extract_action_items_llm(text: str) -> List[str]:
+    """Extract action items from free-form text using Gemini LLM.
+
+    Sends the input text to Gemini with a structured output schema
+    so the response is guaranteed to be a JSON list of strings.
+    """
+    if not text or not text.strip():
+        return []
+
+    prompt = (
+        "You are an assistant that extracts action items from notes.\n"
+        "Given the following text, identify all actionable tasks and return them "
+        "as a JSON array of strings. Each string should be a concise action item.\n"
+        "If there are no action items, return an empty array.\n\n"
+        f"Text:\n{text}"
+    )
+
+    try:
+        response = client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                response_mime_type="application/json",
+                response_schema=list[str],
+                temperature=0.2,
+            ),
+        )
+        print(f"[LLM] Raw response: {response.text}")
+        items: List[str] = json.loads(response.text)
+        return items
+    except Exception as e:
+        print(f"[LLM] Error: {e}")
+        raise
 
 
 def _looks_imperative(sentence: str) -> bool:

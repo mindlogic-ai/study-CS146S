@@ -7,12 +7,16 @@
     <style>
       body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif; margin: 2rem auto; max-width: 800px; padding: 0 1rem; }
       h1 { font-size: 1.5rem; }
+      h2 { font-size: 1.2rem; margin-top: 1.5rem; }
       textarea { width: 100%; min-height: 160px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, monospace; }
-      button { padding: 0.5rem 1rem; }
+      button { padding: 0.5rem 1rem; cursor: pointer; }
       .items { margin-top: 1rem; }
       .item { display: flex; align-items: center; gap: 0.5rem; padding: 0.25rem 0; }
       .muted { color: #6b7280; font-size: 0.875rem; }
-      .row { display: flex; gap: 0.5rem; align-items: center; }
+      .row { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+      .note-card { border: 1px solid #e5e7eb; border-radius: 0.5rem; padding: 0.75rem; margin-bottom: 0.5rem; }
+      .note-card .meta { color: #9ca3af; font-size: 0.75rem; }
+      #notes-section { margin-top: 1.5rem; }
     </style>
   </head>
   <body>
@@ -24,20 +28,29 @@
     <div class="row">
       <label class="row"><input id="save_note" type="checkbox" checked /> Save as note</label>
       <button id="extract">Extract</button>
+      <!-- TODO 4: LLM extraction button -->
+      <button id="extract-llm">Extract LLM</button>
+      <!-- TODO 4: List notes button -->
+      <button id="list-notes">List Notes</button>
     </div>
 
     <div class="items" id="items"></div>
 
+    <!-- TODO 4: Notes listing section -->
+    <div id="notes-section"></div>
+
     <script>
       const $ = (sel) => document.querySelector(sel);
       const itemsEl = $('#items');
-      const btn = $('#extract');
-      btn.addEventListener('click', async () => {
+      const notesSection = $('#notes-section');
+
+      // Shared function to handle extraction (heuristic or LLM)
+      async function handleExtract(endpoint) {
         const text = $('#text').value;
         const save = $('#save_note').checked;
         itemsEl.textContent = 'Extracting...';
         try {
-          const res = await fetch('/action-items/extract', {
+          const res = await fetch(endpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ text, save_note: save }),
@@ -65,10 +78,36 @@
           console.error(err);
           itemsEl.textContent = 'Error extracting items';
         }
-      });
+      }
 
+      // Heuristic extraction
+      $('#extract').addEventListener('click', () => handleExtract('/action-items/extract'));
+
+      // TODO 4: LLM extraction
+      $('#extract-llm').addEventListener('click', () => handleExtract('/action-items/extract-llm'));
+
+      // TODO 4: List all notes
+      $('#list-notes').addEventListener('click', async () => {
+        notesSection.textContent = 'Loading notes...';
+        try {
+          const res = await fetch('/notes');
+          if (!res.ok) throw new Error('Request failed');
+          const notes = await res.json();
+          if (notes.length === 0) {
+            notesSection.innerHTML = '<p class="muted">No notes found.</p>';
+            return;
+          }
+          notesSection.innerHTML = '<h2>Saved Notes</h2>' + notes.map(n => (
+            `<div class="note-card">
+              <div>${n.content.replace(/\n/g, '<br>')}</div>
+              <div class="meta">ID: ${n.id} | ${n.created_at}</div>
+            </div>`
+          )).join('');
+        } catch (err) {
+          console.error(err);
+          notesSection.textContent = 'Error loading notes';
+        }
+      });
     </script>
   </body>
-  </html>
-
-
+</html>
