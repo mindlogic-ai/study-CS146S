@@ -2,27 +2,21 @@ from __future__ import annotations
 
 import sqlite3
 from pathlib import Path
-from typing import Optional
-
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 DATA_DIR = BASE_DIR / "data"
 DB_PATH = DATA_DIR / "app.db"
 
 
-def ensure_data_directory_exists() -> None:
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
-
-
 def get_connection() -> sqlite3.Connection:
-    ensure_data_directory_exists()
     connection = sqlite3.connect(DB_PATH)
     connection.row_factory = sqlite3.Row
+    connection.execute("PRAGMA foreign_keys = ON")
     return connection
 
 
 def init_db() -> None:
-    ensure_data_directory_exists()
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
     with get_connection() as connection:
         cursor = connection.cursor()
         cursor.execute(
@@ -64,18 +58,17 @@ def list_notes() -> list[sqlite3.Row]:
         return list(cursor.fetchall())
 
 
-def get_note(note_id: int) -> Optional[sqlite3.Row]:
+def get_note(note_id: int) -> sqlite3.Row | None:
     with get_connection() as connection:
         cursor = connection.cursor()
         cursor.execute(
             "SELECT id, content, created_at FROM notes WHERE id = ?",
             (note_id,),
         )
-        row = cursor.fetchone()
-        return row
+        return cursor.fetchone()
 
 
-def insert_action_items(items: list[str], note_id: Optional[int] = None) -> list[int]:
+def insert_action_items(items: list[str], note_id: int | None = None) -> list[int]:
     with get_connection() as connection:
         cursor = connection.cursor()
         ids: list[int] = []
@@ -89,7 +82,7 @@ def insert_action_items(items: list[str], note_id: Optional[int] = None) -> list
         return ids
 
 
-def list_action_items(note_id: Optional[int] = None) -> list[sqlite3.Row]:
+def list_action_items(note_id: int | None = None) -> list[sqlite3.Row]:
     with get_connection() as connection:
         cursor = connection.cursor()
         if note_id is None:
@@ -98,10 +91,21 @@ def list_action_items(note_id: Optional[int] = None) -> list[sqlite3.Row]:
             )
         else:
             cursor.execute(
-                "SELECT id, note_id, text, done, created_at FROM action_items WHERE note_id = ? ORDER BY id DESC",
+                "SELECT id, note_id, text, done, created_at "
+                "FROM action_items WHERE note_id = ? ORDER BY id DESC",
                 (note_id,),
             )
         return list(cursor.fetchall())
+
+
+def get_action_item(action_item_id: int) -> sqlite3.Row | None:
+    with get_connection() as connection:
+        cursor = connection.cursor()
+        cursor.execute(
+            "SELECT id, note_id, text, done, created_at FROM action_items WHERE id = ?",
+            (action_item_id,),
+        )
+        return cursor.fetchone()
 
 
 def mark_action_item_done(action_item_id: int, done: bool) -> None:
@@ -112,5 +116,3 @@ def mark_action_item_done(action_item_id: int, done: bool) -> None:
             (1 if done else 0, action_item_id),
         )
         connection.commit()
-
-

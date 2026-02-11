@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import os
 import re
 from typing import Any, List
@@ -66,6 +67,40 @@ def extract_action_items(text: str) -> List[str]:
         seen.add(lowered)
         unique.append(item)
     return unique
+
+
+def extract_action_items_llm(text: str) -> list[str]:
+    """Extract action items from free-form text using Gemini with structured JSON output."""
+    if not text or not text.strip():
+        return []
+
+    prompt = f"""\
+<task>
+Extract actionable to-do items from the notes below.
+Return ONLY items that represent concrete actions someone must take.
+Ignore background information, opinions, and completed items.
+</task>
+
+<notes>
+{text}
+</notes>
+
+<output_format>
+["Set up the database", "Write unit tests for auth module", "Fix the login bug"]
+</output_format>"""
+
+    response = client.models.generate_content(
+        model="gemini-3.0-flash",
+        contents=prompt,
+        config=types.GenerateContentConfig(
+            response_mime_type="application/json",
+            response_schema=list[str],
+            temperature=0.0,
+        ),
+    )
+
+    items: list[str] = json.loads(response.text)
+    return [item.strip() for item in items if item.strip()]
 
 
 def _looks_imperative(sentence: str) -> bool:
