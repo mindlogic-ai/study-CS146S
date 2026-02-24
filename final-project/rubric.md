@@ -6,7 +6,7 @@ Build and ship a **production-quality application** that leverages AI/LLM capabi
 
 **Theme:** Free choice. Build something you actually want to use.
 
-**Deadline:** Week 8 study session (Demo Day)
+**Deadline:** Week 9 study session (Demo Day)
 
 **Submission:** PR to `submissions/{initials}/final-project/` with title `[Final - {initials}]`
 
@@ -125,8 +125,8 @@ These are suggestions — feel free to go in any direction.
 | When | What |
 |------|------|
 | **Now** | Start brainstorming. Pick your idea. |
-| **Week 7 study** | (Optional) Brief pitch: 1-minute idea share for early feedback. |
-| **Week 8 study (Demo Day)** | Final submission PR + 5-min demo + 2-min Q&A. |
+| **Week 8 study** | (Optional) Brief pitch: 1-minute idea share for early feedback. |
+| **Week 9 study (Demo Day)** | Final submission PR + 5-min demo + 2-min Q&A. |
 
 ---
 
