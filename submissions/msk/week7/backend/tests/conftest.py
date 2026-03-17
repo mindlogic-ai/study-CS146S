@@ -38,3 +38,21 @@ def client() -> Generator[TestClient, None, None]:
         yield c
 
     os.unlink(db_path)
+
+
+def seed_notes(client: TestClient, n: int) -> list[dict]:
+    results = []
+    for i in range(n):
+        r = client.post("/notes/", json={"title": f"Note {i:03d}", "content": f"Content {i}"})
+        assert r.status_code == 201
+        results.append(r.json())
+    return results
+
+
+def seed_action_items(client: TestClient, n: int) -> list[dict]:
+    results = []
+    for i in range(n):
+        r = client.post("/action-items/", json={"description": f"Item {i:03d}"})
+        assert r.status_code == 201
+        results.append(r.json())
+    return results
