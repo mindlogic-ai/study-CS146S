@@ -6,7 +6,8 @@ from sqlalchemy.orm import Session
 
 from ..db import get_db
 from ..models import Note
-from ..schemas import NoteCreate, NotePatch, NoteRead
+from ..schemas import ExtractedItemRead, ExtractionResponse, NoteCreate, NotePatch, NoteRead
+from ..services.extract import extract_action_items_detailed
 
 router = APIRouter(prefix="/notes", tags=["notes"])
 
@@ -66,3 +67,13 @@ def get_note(note_id: int, db: Session = Depends(get_db)) -> NoteRead:
     return NoteRead.model_validate(note)
 
 
+@router.post("/{note_id}/extract", response_model=ExtractionResponse)
+def extract_from_note(note_id: int, db: Session = Depends(get_db)) -> ExtractionResponse:
+    note = db.get(Note, note_id)
+    if not note:
+        raise HTTPException(status_code=404, detail="Note not found")
+    extracted = extract_action_items_detailed(note.content)
+    items = [
+        ExtractedItemRead(text=e.text, category=e.category, priority=e.priority) for e in extracted
+    ]
+    return ExtractionResponse(items=items, count=len(items))

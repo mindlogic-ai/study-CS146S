@@ -44,3 +44,12 @@ class ActionItemPatch(BaseModel):
     completed: bool | None = None
 
 
+class ExtractedItemRead(BaseModel):
+    text: str
+    category: str
+    priority: str
+
+
+class ExtractionResponse(BaseModel):
+    items: list[ExtractedItemRead]
+    count: int

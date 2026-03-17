@@ -54,9 +54,14 @@ def extract_action_items_detailed(text: str) -> list[ExtractedItem]:
         elif line.endswith("!"):
             results.append(ExtractedItem(text=line, category="general", priority=priority))
 
-        if _DEADLINE_PATTERN.search(line) and results and results[-1].text in (
-            line,
-            line[3:].strip(),
+        if (
+            _DEADLINE_PATTERN.search(line)
+            and results
+            and results[-1].text
+            in (
+                line,
+                line[3:].strip(),
+            )
         ):
             last = results[-1]
             results[-1] = ExtractedItem(
