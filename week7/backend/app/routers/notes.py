@@ -5,16 +5,29 @@ from sqlalchemy import asc, desc, select
 from sqlalchemy.orm import Session
 
 from ..db import get_db
-from ..models import Note
+from ..models import Note, Tag
 from ..schemas import NoteCreate, NotePatch, NoteRead
 
 router = APIRouter(prefix="/notes", tags=["notes"])
+
+
+def _resolve_tags(db: Session, tag_names: list[str]) -> list[Tag]:
+    tags = []
+    for name in tag_names:
+        tag = db.execute(select(Tag).where(Tag.name == name)).scalar_one_or_none()
+        if not tag:
+            tag = Tag(name=name)
+            db.add(tag)
+            db.flush()
+        tags.append(tag)
+    return tags
 
 
 @router.get("/", response_model=list[NoteRead])
 def list_notes(
     db: Session = Depends(get_db),
     q: Optional[str] = None,
+    tag: Optional[str] = None,
     skip: int = 0,
     limit: int = Query(50, le=200),
     sort: str = Query("-created_at", description="Sort by field, prefix with - for desc"),
@@ -22,6 +35,8 @@ def list_notes(
     stmt = select(Note)
     if q:
         stmt = stmt.where((Note.title.contains(q)) | (Note.content.contains(q)))
+    if tag:
+        stmt = stmt.join(Note.tags).where(Tag.name == tag)
 
     sort_field = sort.lstrip("-")
     order_fn = desc if sort.startswith("-") else asc
@@ -37,6 +52,8 @@ def list_notes(
 @router.post("/", response_model=NoteRead, status_code=201)
 def create_note(payload: NoteCreate, db: Session = Depends(get_db)) -> NoteRead:
     note = Note(title=payload.title, content=payload.content)
+    if payload.tag_names:
+        note.tags = _resolve_tags(db, payload.tag_names)
     db.add(note)
     db.flush()
     db.refresh(note)
@@ -52,6 +69,8 @@ def patch_note(note_id: int, payload: NotePatch, db: Session = Depends(get_db)) 
         note.title = payload.title
     if payload.content is not None:
         note.content = payload.content
+    if payload.tag_names is not None:
+        note.tags = _resolve_tags(db, payload.tag_names)
     db.add(note)
     db.flush()
     db.refresh(note)
@@ -64,5 +83,3 @@ def get_note(note_id: int, db: Session = Depends(get_db)) -> NoteRead:
     if not note:
         raise HTTPException(status_code=404, detail="Note not found")
     return NoteRead.model_validate(note)
-
-
