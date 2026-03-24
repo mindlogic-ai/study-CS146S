@@ -107,6 +107,24 @@
 - **DB**: SQLite (Prisma ORM)
 - **구조**: 풀스택 단일 프로젝트
 
+## Note on bolt.new
+과제 원본은 bolt.new 사용을 요구하지만, 유료 플랜이 필요하여 대체하기로 결정.
+3개 스택 모두 직접 구현한다.
+
+## Deliverables
+
+### 각 프로젝트 폴더 README.md
+각 버전 폴더에 README.md 포함:
+- Prerequisites (Python/Node 버전 등)
+- 설치 방법 (`pip install` / `npm install`)
+- 실행 방법
+- 알려진 이슈 및 참고사항
+
+### writeup.md
+`week8/writeup.md`에 작성:
+- App Concept (가계부 앱 설명)
+- 3개 버전 각각의 App Description (스택, 구현 방식, 특이사항)
+
 ## Implementation Order
 1. Django (Python 익숙, 가장 빠르게 완성)
 2. Express + React (API/프론트 분리 구조)
