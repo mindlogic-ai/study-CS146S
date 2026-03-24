@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Django Blog</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Django Blog</h1>
+        <p>A simple blog built with Django + Django REST Framework</p>
+    </header>
+
+    <main>
+        <section id="post-form-section">
+            <h2 id="form-title">Create New Post</h2>
+            <form id="post-form">
+                <input type="hidden" id="post-id">
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" id="title" required maxlength="200" placeholder="Post title">
+                </div>
+                <div class="form-group">
+                    <label for="author">Author</label>
+                    <input type="text" id="author" required maxlength="100" placeholder="Author name">
+                </div>
+                <div class="form-group">
+                    <label for="tags">Tags</label>
+                    <input type="text" id="tags" placeholder="Comma-separated tags (e.g. python, django)">
+                </div>
+                <div class="form-group">
+                    <label for="content">Content</label>
+                    <textarea id="content" required rows="6" placeholder="Write your post..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" id="submit-btn">Create Post</button>
+                    <button type="button" id="cancel-btn" class="btn-secondary" style="display:none;" onclick="resetForm()">Cancel</button>
+                </div>
+            </form>
+        </section>
+
+        <section id="search-section">
+            <input type="text" id="search-input" placeholder="Search posts..." oninput="searchPosts()">
+        </section>
+
+        <section id="posts-list">
+            <h2>All Posts</h2>
+            <div id="posts-container"></div>
+        </section>
+    </main>
+
+    <script src="{% static 'app.js' %}"></script>
+</body>
+</html>
