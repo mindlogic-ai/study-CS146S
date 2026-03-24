@@ -50,5 +50,10 @@ venv.bak/
 ehthumbs.db
 Thumbs.db
 
+# Node
+node_modules/
+package-lock.json
+
 # Vercel
 .vercel/*
+.mcp.json
