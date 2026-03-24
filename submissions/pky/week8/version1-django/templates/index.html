@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes & Action Items</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<body>
+    <h1>Notes & Action Items Manager</h1>
+
+    <div class="container">
+        <section class="panel">
+            <h2>Notes</h2>
+            <form id="note-form">
+                <input type="text" id="note-title" placeholder="Title" required>
+                <textarea id="note-content" placeholder="Content" required></textarea>
+                <button type="submit">Add Note</button>
+            </form>
+            <div class="search-bar">
+                <input type="text" id="note-search" placeholder="Search notes...">
+                <button id="note-search-btn">Search</button>
+            </div>
+            <ul id="notes"></ul>
+        </section>
+
+        <section class="panel">
+            <h2>Action Items</h2>
+            <form id="action-form">
+                <input type="text" id="action-desc" placeholder="Description" required>
+                <button type="submit">Add Action Item</button>
+            </form>
+            <div class="filter-bar">
+                <label>
+                    <input type="checkbox" id="filter-completed"> Show only completed
+                </label>
+            </div>
+            <ul id="actions"></ul>
+        </section>
+    </div>
+
+    <script src="{% static 'app.js' %}"></script>
+</body>
+</html>
