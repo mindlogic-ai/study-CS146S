@@ -1,0 +1,19 @@
+{
+  "name": "version-mern",
+  "private": true,
+  "scripts": {
+    "server": "node server/index.js",
+    "client": "cd client && npm run dev",
+    "dev": "npx concurrently \"npm run server\" \"npm run client\"",
+    "install-all": "npm install && cd client && npm install"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.0",
+    "mongoose": "^8.8.0",
+    "mongodb-memory-server": "^10.4.0"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}
