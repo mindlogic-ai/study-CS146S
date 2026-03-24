@@ -1,0 +1,16 @@
+export interface Post {
+  id: number;
+  title: string;
+  content: string;
+  author: string;
+  tags: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PostInput {
+  title: string;
+  content: string;
+  author: string;
+  tags: string;
+}
