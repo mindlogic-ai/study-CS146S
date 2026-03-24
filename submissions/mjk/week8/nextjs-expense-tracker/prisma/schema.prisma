@@ -1,0 +1,19 @@
+// prisma/schema.prisma
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Transaction {
+  id          Int      @id @default(autoincrement())
+  type        String
+  category    String
+  amount      Int
+  description String   @default("")
+  date        DateTime
+  createdAt   DateTime @default(now())
+}
