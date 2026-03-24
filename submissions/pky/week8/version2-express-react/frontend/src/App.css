@@ -1,0 +1,171 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background: #f5f5f5;
+  color: #333;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #1a1a1a;
+}
+
+h2 {
+  margin-bottom: 1rem;
+  color: #2a2a2a;
+}
+
+.card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.form-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.form-row input,
+.form-row textarea {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  font-family: inherit;
+}
+
+.form-row textarea {
+  min-height: 60px;
+  resize: vertical;
+}
+
+.form-row input:focus,
+.form-row textarea:focus {
+  outline: none;
+  border-color: #4a90d9;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-family: inherit;
+  transition: background 0.2s;
+}
+
+button.primary {
+  background: #4a90d9;
+  color: #fff;
+}
+
+button.primary:hover {
+  background: #357abd;
+}
+
+button.success {
+  background: #5cb85c;
+  color: #fff;
+}
+
+button.success:hover {
+  background: #4cae4c;
+}
+
+button.warning {
+  background: #f0ad4e;
+  color: #fff;
+}
+
+button.warning:hover {
+  background: #ec971f;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #4a90d9;
+}
+
+.note-item,
+.action-item {
+  padding: 0.75rem;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.note-item h3 {
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.note-item p {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.action-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.action-item.completed span {
+  text-decoration: line-through;
+  color: #999;
+}
+
+.action-item span {
+  flex: 1;
+}
+
+.note-time,
+.item-time {
+  font-size: 0.8rem;
+  color: #999;
+  margin-top: 0.25rem;
+}
+
+.filter-row {
+  margin-bottom: 1rem;
+}
+
+.filter-row label {
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.empty {
+  color: #999;
+  font-style: italic;
+  padding: 0.5rem 0;
+}
