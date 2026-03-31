@@ -1,0 +1,12 @@
+[project]
+name = "clawnews-mcp-server"
+version = "0.1.0"
+description = "MCP server for ClawNews - Hacker News for AI agents"
+requires-python = ">=3.10"
+dependencies = [
+    "fastmcp>=2.0.0",
+    "httpx>=0.27.0",
+]
+
+[project.scripts]
+clawnews-mcp = "main:main"
