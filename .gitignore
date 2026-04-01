@@ -50,5 +50,9 @@ venv.bak/
 ehthumbs.db
 Thumbs.db
 
+# Node
+node_modules/
+.next/
+
 # Vercel
 .vercel/*
