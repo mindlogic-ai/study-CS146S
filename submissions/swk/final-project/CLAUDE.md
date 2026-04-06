@@ -105,6 +105,80 @@ xcodebuild -scheme ClaudeLens test
 - UI 구현 + API 서비스 구현 → 별도 에이전트 동시 실행
 - 테스트 작성 + 문서 업데이트 → 병렬 실행 가능
 
+## Available Tools — MCP Servers & Plugins
+
+에이전트와 메인 세션에서 적극 활용해야 하는 도구들:
+
+### MCP: XcodeBuildMCP (`xcodebuild`)
+Xcode 프로젝트 빌드, 테스트, 실행을 자동화하는 MCP 서버.
+
+**사용 시점:**
+- 코드 작성/수정 후 빌드 검증 → `xcodebuild` MCP로 빌드
+- 테스트 실행 → `xcodebuild` MCP로 테스트 러닝
+- UI 확인 → 앱 실행 후 스크린샷 캡처
+- 빌드 에러 발생 시 → 에러 로그 확인 및 수정
+
+**에이전트별 활용:**
+| Agent | XcodeBuildMCP 활용 |
+|-------|-------------------|
+| `feature-implementer` | 구현 완료 후 빌드 검증, 앱 실행하여 기본 동작 확인 |
+| `test-writer` | 테스트 작성 후 테스트 실행 및 결과 확인 |
+| `code-refactor` | 리팩토링 후 빌드 + 테스트 통과 검증 |
+
+### Plugin: SwiftUI Expert (`swiftui-expert`)
+SwiftUI 코드 작성, 리뷰, 개선을 위한 전문 스킬.
+
+**사용 시점:**
+- SwiftUI 뷰 작성 시 best practice 확인
+- `@Observable`, `NavigationSplitView`, state management 패턴 결정
+- macOS 14+ / iOS 17+ API 활용 가이드
+- Liquid Glass 등 최신 디자인 트렌드 적용
+
+### Plugin: Swift Concurrency (`swift-concurrency`)
+async/await, actor isolation, Sendable 관련 전문 스킬.
+
+**사용 시점:**
+- `@MainActor` isolation 패턴 설계
+- URLSession SSE 스트리밍 구현 시 concurrency 패턴
+- Swift 6 strict concurrency 대응
+- data race 진단 및 해결
+
+### Plugin: Swift Testing Expert (`swift-testing-expert`)
+Swift Testing 프레임워크 전문 스킬.
+
+**사용 시점:**
+- `#expect` / `#require` 매크로 사용법
+- parameterized test, trait, tag 설계
+- XCTest → Swift Testing 마이그레이션
+- async 테스트 패턴
+
+### Plugin: Swift LSP (`swift-lsp`)
+Swift 코드 분석을 위한 LSP 통합.
+
+**사용 시점:**
+- 심볼 정의 찾기 (`goto definition`)
+- 참조 검색 (`find references`)
+- 코드 진단 (`diagnostics`) — 컴파일 에러/경고 실시간 확인
+- 리네이밍 (`rename`) — 안전한 심볼 이름 변경
+
+### Plugin: Oh My Claude Code (`oh-my-claudecode`)
+고급 워크플로우 오케스트레이션.
+
+**사용 시점:**
+- `/ultrawork` — 여러 파일을 병렬로 구현할 때
+- `/verify` — 변경사항이 실제로 동작하는지 검증
+- `/trace` — 버그 원인 추적
+- `/autopilot` — 자율 구현 모드
+
+### Tool Usage Rules
+
+1. **코드 작성 후 반드시 빌드 검증** — XcodeBuildMCP로 빌드하여 컴파일 에러 즉시 확인
+2. **SwiftUI 뷰 작성 시** — `swiftui-expert` 스킬로 best practice 확인
+3. **async/await 코드 작성 시** — `swift-concurrency` 스킬로 actor isolation 확인
+4. **테스트 작성 시** — `swift-testing-expert` 스킬로 최신 매크로/패턴 활용
+5. **리팩토링 시** — Swift LSP로 참조 검색 후 안전하게 변경
+6. **빌드 실패 시** — Swift LSP diagnostics + XcodeBuildMCP 에러 로그 병행 확인
+
 ## Code Conventions
 
 ### Swift Style
