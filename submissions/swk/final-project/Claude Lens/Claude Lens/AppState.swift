@@ -27,7 +27,6 @@ final class AppState {
     init() {
         let completed = UserDefaults.standard.bool(forKey: "isOnboardingComplete")
         self.showOnboarding = !completed
-        print("[AppState] isOnboardingComplete=\(completed), showOnboarding=\(self.showOnboarding)")
     }
 
     func toggleOverlay() {

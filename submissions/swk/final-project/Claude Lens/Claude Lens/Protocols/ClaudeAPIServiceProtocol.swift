@@ -10,6 +10,8 @@ enum StreamEvent: Sendable {
     case outputTokens(Int)
     /// The stream has completed successfully.
     case done
+    /// A tool use request from the assistant. inputJSON is the raw JSON string of the tool input.
+    case toolUse(id: String, name: String, inputJSON: String)
 }
 
 /// Content block sent in an API request message.

@@ -43,13 +43,66 @@ final class ClaudeAPIService: ClaudeAPIServiceProtocol {
                     }
 
                     var messages = conversationHistory
-                    messages.append(["role": "user", "content": userContent])
+                    if !userContent.isEmpty {
+                        messages.append(["role": "user", "content": userContent])
+                    }
+
+                    let tools: [[String: Any]] = [
+                        [
+                            "name": "fetch_url",
+                            "description": "Fetch the content of a web page URL. Use this when the user provides a URL or asks about web content.",
+                            "input_schema": [
+                                "type": "object",
+                                "properties": [
+                                    "url": [
+                                        "type": "string",
+                                        "description": "The URL to fetch"
+                                    ]
+                                ],
+                                "required": ["url"]
+                            ]
+                        ],
+                        [
+                            "name": "web_search",
+                            "description": "Search the web for information. Use this when the user asks a question that requires up-to-date information, facts you're unsure about, or when they explicitly ask to search.",
+                            "input_schema": [
+                                "type": "object",
+                                "properties": [
+                                    "query": [
+                                        "type": "string",
+                                        "description": "The search query"
+                                    ]
+                                ],
+                                "required": ["query"]
+                            ]
+                        ],
+                        [
+                            "name": "dictionary",
+                            "description": "Look up a word definition, pronunciation, and usage examples. Use this when the user asks about the meaning of a word, how to use it, or wants a dictionary lookup.",
+                            "input_schema": [
+                                "type": "object",
+                                "properties": [
+                                    "word": [
+                                        "type": "string",
+                                        "description": "The word to look up"
+                                    ],
+                                    "language": [
+                                        "type": "string",
+                                        "description": "Language code: 'en' for English (default)",
+                                        "enum": ["en"]
+                                    ]
+                                ],
+                                "required": ["word"]
+                            ]
+                        ]
+                    ]
 
                     let body: [String: Any] = [
                         "model": model,
                         "max_tokens": 4096,
                         "system": systemPrompt,
                         "stream": true,
+                        "tools": tools,
                         "messages": messages
                     ]
 
@@ -81,6 +134,12 @@ final class ClaudeAPIService: ClaudeAPIServiceProtocol {
                         )
                     }
 
+                    // Track tool_use block accumulation
+                    var currentToolUseId: String?
+                    var currentToolUseName: String?
+                    var currentToolUseInputJSON = ""
+                    var isAccumulatingToolInput = false
+
                     for try await line in bytes.lines {
                         guard line.hasPrefix("data: ") else { continue }
                         let jsonStr = String(line.dropFirst(6))
@@ -92,11 +151,42 @@ final class ClaudeAPIService: ClaudeAPIServiceProtocol {
 
                         let eventType = json["type"] as? String ?? ""
 
-                        if eventType == "content_block_delta",
-                           let delta = json["delta"] as? [String: Any],
-                           let text = delta["text"] as? String
+                        if eventType == "content_block_start",
+                           let block = json["content_block"] as? [String: Any],
+                           let blockType = block["type"] as? String
                         {
-                            continuation.yield(.textDelta(text))
+                            if blockType == "tool_use" {
+                                currentToolUseId = block["id"] as? String
+                                currentToolUseName = block["name"] as? String
+                                currentToolUseInputJSON = ""
+                                isAccumulatingToolInput = true
+                            } else {
+                                isAccumulatingToolInput = false
+                            }
+                        }
+
+                        if eventType == "content_block_delta",
+                           let delta = json["delta"] as? [String: Any]
+                        {
+                            let deltaType = delta["type"] as? String ?? ""
+                            if deltaType == "text_delta", let text = delta["text"] as? String {
+                                continuation.yield(.textDelta(text))
+                            } else if deltaType == "input_json_delta",
+                                      let partial = delta["partial_json"] as? String,
+                                      isAccumulatingToolInput
+                            {
+                                currentToolUseInputJSON += partial
+                            }
+                        }
+
+                        if eventType == "content_block_stop", isAccumulatingToolInput {
+                            if let id = currentToolUseId, let name = currentToolUseName {
+                                continuation.yield(.toolUse(id: id, name: name, inputJSON: currentToolUseInputJSON))
+                            }
+                            isAccumulatingToolInput = false
+                            currentToolUseId = nil
+                            currentToolUseName = nil
+                            currentToolUseInputJSON = ""
                         }
 
                         if eventType == "message_start",
