@@ -22,6 +22,7 @@ struct Claude_LensApp: App {
         // Defer hotkey registration until after the app is fully initialized
         DispatchQueue.main.async { [self] in
             wireHotkeys()
+            OverlayWindowController.shared.show(with: overlayContent)
         }
     }
 
