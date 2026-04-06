@@ -27,18 +27,10 @@ struct Claude_LensApp: App {
     }
 
     private var overlayContent: some View {
-        Group {
-            if appState.showOnboarding {
-                OnboardingView {
-                    appState.isOnboardingComplete = true
-                }
-            } else {
-                ContentView()
-                    .environment(appState)
-            }
-        }
-        .modelContainer(sharedModelContainer)
-        .environment(\.services, services)
+        RootView()
+            .environment(appState)
+            .modelContainer(sharedModelContainer)
+            .environment(\.services, services)
     }
 
     var body: some Scene {

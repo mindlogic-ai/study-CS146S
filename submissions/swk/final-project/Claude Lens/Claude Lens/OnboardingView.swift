@@ -5,7 +5,7 @@ struct OnboardingView: View {
     @State private var settingsVM: SettingsViewModel?
     @State private var isKeyValid: Bool?
     @Environment(\.services) private var services
-    let onComplete: () -> Void
+    @Environment(AppState.self) private var appState
 
     var body: some View {
         VStack(spacing: 0) {
@@ -26,8 +26,8 @@ struct OnboardingView: View {
                 Group {
                     switch currentStep {
                     case 0: welcomeStep
-                    case 1: apiKeyStep(vm: vm)
-                    case 2: permissionsStep(vm: vm)
+                    case 1: permissionsStep(vm: vm)
+                    case 2: apiKeyStep(vm: vm)
                     case 3: readyStep
                     default: EmptyView()
                     }
@@ -49,7 +49,7 @@ struct OnboardingView: View {
                             withAnimation { currentStep += 1 }
                         }
                         .buttonStyle(.borderedProminent)
-                        .disabled(currentStep == 1 && !vm.hasAPIKey)
+                        .disabled(currentStep == 2 && !vm.hasAPIKey)
                     }
                 }
                 .padding(24)
@@ -188,7 +188,7 @@ struct OnboardingView: View {
             }
 
             Button("Start Using Claude Lens") {
-                onComplete()
+                appState.isOnboardingComplete = true
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)

@@ -80,3 +80,6 @@ Pods/
 
 # Node (for week3/week8)
 node_modules/
+
+# Xcode build output
+**/build/
