@@ -49,6 +49,28 @@ macOS 네이티브 오버레이 AI 어시스턴트. 글로벌 단축키로 텍�
 
 ## Setup
 
+### Option A: DMG로 설치 (권장)
+
+1. **DMG 파일 열기**
+   - `Claude Lens.dmg` 파일을 더블클릭
+   - "개발자를 확인할 수 없음" 경고가 나타나면:
+     - **System Settings → Privacy & Security** 하단으로 스크롤
+     - `"Claude Lens" was blocked` 메시지 옆 **Open Anyway** 클릭
+     - 또는 터미널에서 실행:
+       ```bash
+       xattr -cr "/Applications/Claude Lens.app"
+       ```
+
+2. **앱 설치**
+   - DMG가 마운트되면 `Claude Lens.app`을 `/Applications` 폴더로 드래그
+   - 또는 더블클릭하여 바로 실행
+
+3. **첫 실행 시 권한 허용**
+   - macOS가 "인터넷에서 다운로드한 앱" 확인 → **Open** 클릭
+   - 메뉴 바에 Claude Lens 아이콘이 나타남
+
+### Option B: 소스에서 빌드
+
 1. **프로젝트 열기**
    ```bash
    open "Claude Lens.xcodeproj"
@@ -61,11 +83,16 @@ macOS 네이티브 오버레이 AI 어시스턴트. 글로벌 단축키로 텍�
      xcodebuild -scheme "Claude Lens" -configuration Debug build
      ```
 
-3. **초기 설정 (Onboarding)**
-   - 앱 실행 시 온보딩 화면이 표시됩니다.
-   - Anthropic API 키 입력 및 검증
-   - Accessibility 권한 허용 (텍스트 캡처용)
+### 초기 설정 (Onboarding)
+
+앱 첫 실행 시 온보딩 화면이 표시됩니다:
+
+1. **Welcome** — 앱 소개
+2. **Permissions** — 권한 설정
+   - Accessibility 권한 허용 (텍스트 캡처용, 필수)
    - Screen Recording 권한 허용 (스크린샷 캡처용, 선택)
+3. **API Key** — Anthropic API 키 입력 및 검증
+4. **Ready** — 설정 완료, 시작
 
 ## Keyboard Shortcuts
 

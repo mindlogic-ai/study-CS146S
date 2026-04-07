@@ -81,7 +81,7 @@ struct OnboardingView: View {
                 .foregroundStyle(.secondary)
             HStack(spacing: 24) {
                 featureCard(icon: "text.cursor", title: "Text Capture", desc: "⌘+⇧+L")
-                featureCard(icon: "camera.viewfinder", title: "Screenshot", desc: "⌘+⇧+K")
+                featureCard(icon: "camera.viewfinder", title: "Screenshot", desc: "⌘+⌃+⇧+4")
                 featureCard(icon: "bubble.left.and.bubble.right", title: "AI Chat", desc: "Streaming")
             }
             .padding(.top, 8)
@@ -182,7 +182,7 @@ struct OnboardingView: View {
 
             VStack(alignment: .leading, spacing: 8) {
                 shortcutRow("⌘+⇧+L", "Text Quick Capture")
-                shortcutRow("⌘+⇧+K", "Screenshot Quick Capture")
+                shortcutRow("⌘+⌃+⇧+4", "Screenshot Quick Capture")
                 shortcutRow("Esc", "Hide overlay")
                 shortcutRow("⌘+N", "New session")
             }
