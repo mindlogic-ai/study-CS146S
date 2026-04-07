@@ -7,6 +7,7 @@ struct ChatView: View {
     @Environment(\.services) private var services
     @Environment(AppState.self) private var appState
     @State private var chatVM: ChatViewModel?
+    @State private var displayMessages: [Message] = []
 
     var body: some View {
         VStack(spacing: 0) {
@@ -30,11 +31,11 @@ struct ChatView: View {
             Divider()
 
             if let vm = chatVM {
-                // Messages
+                // Messages — use cached array to avoid re-sorting on every render
                 ScrollViewReader { proxy in
                     ScrollView {
                         LazyVStack(spacing: 0) {
-                            ForEach(session.sortedMessages) { message in
+                            ForEach(displayMessages) { message in
                                 MessageBubbleView(message: message)
                                     .id(message.id)
                             }
@@ -42,7 +43,8 @@ struct ChatView: View {
                         .padding(.vertical, 12)
                     }
                     .onChange(of: session.messages.count) {
-                        if let lastMessage = session.sortedMessages.last {
+                        displayMessages = session.sortedMessages
+                        if let lastMessage = displayMessages.last {
                             withAnimation(.easeOut(duration: 0.3)) {
                                 proxy.scrollTo(lastMessage.id, anchor: .bottom)
                             }
@@ -79,6 +81,7 @@ struct ChatView: View {
                     keychainService: services.keychainService
                 )
             }
+            displayMessages = session.sortedMessages
             consumePendingCapture()
         }
         .onChange(of: appState.pendingCapturedText) {

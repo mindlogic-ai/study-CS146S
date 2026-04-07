@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		7CCBE4F72F837D0E0008B452 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = 7CMARKDOWN0002 /* MarkdownUI */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		7CCBE37C2F834DE00008B452 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7CCBE4F72F837D0E0008B452 /* MarkdownUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -196,11 +201,11 @@
 			);
 			mainGroup = 7CCBE3632F834DDF0008B452;
 			minimizedProjectReferenceProxies = 1;
-			preferredProjectObjectVersion = 77;
-			productRefGroup = 7CCBE36D2F834DDF0008B452 /* Products */;
 			packageReferences = (
 				7CMARKDOWN0001 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
 			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 7CCBE36D2F834DDF0008B452 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -413,6 +418,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.swkim..Claude-Lens";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -446,6 +452,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.swkim..Claude-Lens";
 				PRODUCT_NAME = "$(TARGET_NAME)";

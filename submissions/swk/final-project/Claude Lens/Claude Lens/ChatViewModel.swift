@@ -15,6 +15,10 @@ final class ChatViewModel {
     private let apiService: ClaudeAPIServiceProtocol
     private let keychainService: KeychainServiceProtocol
 
+    // --- Throttle state for streaming UI updates ---
+    private var lastFlushTime: ContinuousClock.Instant = .now
+    private let flushInterval: Duration = .milliseconds(50)
+
     init(
         apiService: ClaudeAPIServiceProtocol,
         keychainService: KeychainServiceProtocol
@@ -140,11 +144,17 @@ final class ChatViewModel {
 
         var pendingToolUse: (id: String, name: String, inputJSON: String)?
 
+        lastFlushTime = .now
         for try await event in stream {
             switch event {
             case .textDelta(let token):
                 currentResponse += token
-                assistantMessage.content = currentResponse
+                // Throttle SwiftData model updates to avoid CPU spike
+                let now = ContinuousClock.Instant.now
+                if now - lastFlushTime >= flushInterval {
+                    assistantMessage.content = currentResponse
+                    lastFlushTime = now
+                }
             case .inputTokens(let count):
                 session.tokenCountInput += count
                 userMessage.tokenCount = count
@@ -157,6 +167,8 @@ final class ChatViewModel {
                 break
             }
         }
+        // Final flush to ensure all content is displayed
+        assistantMessage.content = currentResponse
 
         guard let toolUse = pendingToolUse,
               ["fetch_url", "web_search", "dictionary"].contains(toolUse.name)
@@ -242,11 +254,16 @@ final class ChatViewModel {
             apiKey: apiKey
         )
 
+        lastFlushTime = .now
         for try await event in followUpStream {
             switch event {
             case .textDelta(let token):
                 currentResponse += token
-                assistantMessage.content = currentResponse
+                let now = ContinuousClock.Instant.now
+                if now - lastFlushTime >= flushInterval {
+                    assistantMessage.content = currentResponse
+                    lastFlushTime = now
+                }
             case .outputTokens(let count):
                 session.tokenCountOutput += count
                 assistantMessage.tokenCount = count
@@ -256,6 +273,8 @@ final class ChatViewModel {
                 break
             }
         }
+        // Final flush
+        assistantMessage.content = currentResponse
     }
 
     private func dictionaryLookup(word: String) async -> String {
