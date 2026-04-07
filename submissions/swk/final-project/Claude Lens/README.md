@@ -2,9 +2,9 @@
 
 macOS 네이티브 오버레이 AI 어시스턴트. 글로벌 단축키로 텍스트나 스크린샷을 캡처하고, Claude API를 통해 번역/설명/코드 분석/자유 질문을 즉시 수행합니다.
 
-## Screenshots
+## Demo
 
-> 앱 실행 시 오버레이 윈도우가 자동으로 열리며, 메뉴 바에서 접근할 수 있습니다.
+https://github.com/user-attachments/assets/158e71f1-d4a7-42c1-b741-c2d0a2dbf855
 
 ## Features
 
