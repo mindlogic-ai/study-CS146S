@@ -87,7 +87,7 @@ struct SettingsView: View {
                 HStack {
                     Text("Screenshot Quick Capture")
                     Spacer()
-                    Text("⌘+⇧+K")
+                    Text("⌘+⌃+⇧+4")
                         .font(.system(.body, design: .monospaced))
                         .foregroundStyle(.secondary)
                 }

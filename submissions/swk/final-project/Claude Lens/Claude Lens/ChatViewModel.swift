@@ -80,6 +80,7 @@ final class ChatViewModel {
         currentResponse = ""
         isStreaming = true
         errorMessage = nil
+        assistantMessage.isStreaming = true
 
         let model = selectedModel
             ?? UserDefaults.standard.string(forKey: "selectedModel")
@@ -102,12 +103,14 @@ final class ChatViewModel {
                 if session.isAutoTitled && session.messages.count <= 2 {
                     generateAutoTitle(for: session, firstMessage: capturedText)
                 }
+                assistantMessage.isStreaming = false
                 try? modelContext.save()
             } catch {
                 errorMessage = error.localizedDescription
                 assistantMessage.content = currentResponse.isEmpty
                     ? "Error: \(error.localizedDescription)"
                     : currentResponse
+                assistantMessage.isStreaming = false
                 try? modelContext.save()
             }
 

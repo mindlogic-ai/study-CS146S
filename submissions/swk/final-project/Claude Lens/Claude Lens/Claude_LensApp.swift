@@ -91,18 +91,20 @@ struct Claude_LensApp: App {
             }
         }
         services.hotkeyService.onScreenshotCapture = { [self] in
-            Task { @MainActor in
-                // Launch macOS interactive screen capture to clipboard
+            Task.detached {
+                // Launch macOS interactive screen capture to clipboard (off main thread)
                 let process = Process()
                 process.executableURL = URL(fileURLWithPath: "/usr/sbin/screencapture")
                 process.arguments = ["-ic"] // interactive, clipboard
                 try? process.run()
                 process.waitUntilExit()
 
-                // Read captured image from clipboard
-                if let imageData = services.clipboardService.readImage() {
-                    appState.pendingCapturedImage = imageData
-                    OverlayWindowController.shared.show(with: overlayContent)
+                // Read captured image from clipboard on main thread
+                await MainActor.run {
+                    if let imageData = services.clipboardService.readImage() {
+                        appState.pendingCapturedImage = imageData
+                        OverlayWindowController.shared.show(with: overlayContent)
+                    }
                 }
             }
         }

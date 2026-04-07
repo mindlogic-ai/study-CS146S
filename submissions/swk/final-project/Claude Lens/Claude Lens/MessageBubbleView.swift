@@ -50,6 +50,13 @@ struct MessageBubbleView: View {
                     ProgressView()
                         .controlSize(.small)
                         .padding(12)
+                } else if message.isStreaming {
+                    // Plain text during streaming to avoid MarkdownUI re-parsing every token
+                    Text(message.content)
+                        .textSelection(.enabled)
+                        .padding(12)
+                        .background(Color(.controlBackgroundColor))
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
                 } else {
                     Markdown(message.content)
                         .markdownTheme(.gitHub)

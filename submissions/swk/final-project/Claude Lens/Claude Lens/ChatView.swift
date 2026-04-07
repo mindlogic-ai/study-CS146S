@@ -48,11 +48,7 @@ struct ChatView: View {
                             }
                         }
                     }
-                    .onChange(of: vm.currentResponse) {
-                        if let lastMessage = session.sortedMessages.last {
-                            proxy.scrollTo(lastMessage.id, anchor: .bottom)
-                        }
-                    }
+                    .defaultScrollAnchor(.bottom)
                 }
 
                 // Error banner

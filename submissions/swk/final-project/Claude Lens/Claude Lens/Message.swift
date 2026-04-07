@@ -10,6 +10,7 @@ final class Message {
     var tokenCount: Int
     var createdAt: Date
     var session: Session?
+    @Transient var isStreaming: Bool = false
 
     init(
         role: MessageRole,
