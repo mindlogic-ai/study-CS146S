@@ -9,6 +9,7 @@ final class AppState {
     var isOverlayVisible = false
     var pendingCapturedText: String?
     var pendingCapturedImage: Data?
+    var isCapturingScreenshot = false
     var showOnboarding: Bool
 
     var isOnboardingComplete: Bool {

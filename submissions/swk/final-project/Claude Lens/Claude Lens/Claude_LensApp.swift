@@ -82,25 +82,22 @@ struct Claude_LensApp: App {
                 } else if let text = services.clipboardService.readText() {
                     appState.pendingCapturedText = text
                 }
-                if appState.pendingCapturedText == nil,
-                   let imageData = services.clipboardService.readImage()
-                {
-                    appState.pendingCapturedImage = imageData
-                }
                 OverlayWindowController.shared.show(with: overlayContent)
             }
         }
         services.hotkeyService.onScreenshotCapture = { [self] in
+            // Guard against concurrent interactive captures (e.g. during screen recording)
+            guard !appState.isCapturingScreenshot else { return }
+            appState.isCapturingScreenshot = true
             Task.detached {
-                // Launch macOS interactive screen capture to clipboard (off main thread)
                 let process = Process()
                 process.executableURL = URL(fileURLWithPath: "/usr/sbin/screencapture")
                 process.arguments = ["-ic"] // interactive, clipboard
                 try? process.run()
                 process.waitUntilExit()
 
-                // Read captured image from clipboard on main thread
                 await MainActor.run {
+                    appState.isCapturingScreenshot = false
                     if let imageData = services.clipboardService.readImage() {
                         appState.pendingCapturedImage = imageData
                         OverlayWindowController.shared.show(with: overlayContent)
