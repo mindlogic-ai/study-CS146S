@@ -22,6 +22,14 @@ https://github.com/user-attachments/assets/158e71f1-d4a7-42c1-b741-c2d0a2dbf855
 | 설명 | `/explain` | 텍스트/이미지 분석 설명 |
 | 코드 설명 | `/code` | 코드 분석 및 설명 |
 
+- **Tool Use (AI 도구 호출):**
+
+| 도구 | 설명 |
+|------|------|
+| `fetch_url` | URL 입력 시 웹 페이지 내용을 가져와 분석 |
+| `web_search` | 최신 정보가 필요한 질문 시 DuckDuckGo 검색 수행 |
+| `dictionary` | 영어 단어의 발음, 정의, 예문, 동의어 조회 |
+
 - **이미지 첨부** — 클립보드 이미지 붙여넣기 지원
 - **Floating Overlay** — 다른 앱 위에 항상 표시되는 플로팅 패널
 - **Menu Bar App** — Dock에 표시되지 않는 메뉴 바 전용 앱
