@@ -9,10 +9,17 @@ from fastapi.staticfiles import StaticFiles
 
 def create_app() -> FastAPI:
     """Create and configure the FastAPI application."""
-    app = FastAPI(title="docpybara", version="0.1.0")
+    root_dir = Path(os.environ.get("DOCPYBARA_ROOT_DIR", ".")).resolve()
 
-    root_dir = os.environ.get("DOCPYBARA_ROOT_DIR", ".")
-    app.state.root_dir = Path(root_dir).resolve()
+    # Set up MCP server
+    from docpybara.mcp_server import mcp, set_root_dir
+
+    set_root_dir(root_dir)
+    mcp_app = mcp.http_app(path="/", transport="streamable-http")
+
+    # Use MCP app's lifespan so its session manager is properly initialized
+    app = FastAPI(title="docpybara", version="0.1.0", lifespan=mcp_app.lifespan)
+    app.state.root_dir = root_dir
 
     # Register routers
     from docpybara.routers.ai import router as ai_router
@@ -23,7 +30,10 @@ def create_app() -> FastAPI:
     app.include_router(search_router, prefix="/api")
     app.include_router(ai_router, prefix="/api")
 
-    # Serve static frontend files
+    # Mount MCP server at /mcp
+    app.mount("/mcp", mcp_app)
+
+    # Serve static frontend files (must be last — catches all routes)
     static_dir = Path(__file__).parent / "static"
     app.mount("/", StaticFiles(directory=str(static_dir), html=True), name="static")
 

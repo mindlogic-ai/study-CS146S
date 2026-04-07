@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "docpybara"
-version = "0.1.0"
+version = "0.2.0"
 description = "A lightweight web-based markdown document manager for your repository"
 license = "MIT"
 requires-python = ">=3.10"
@@ -24,12 +24,12 @@ dependencies = [
     "uvicorn>=0.23.0",
     "click>=8.0.0",
     "python-dotenv>=1.0.0",
+    "fastmcp>=2.0.0",
 ]
 
 [project.optional-dependencies]
 ai = [
     "openai>=1.0.0",
-    "anthropic>=0.20.0",
 ]
 dev = [
     "pytest>=7.0.0",
